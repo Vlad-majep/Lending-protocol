@@ -20,7 +20,7 @@ contract ERC20  is IERC20 {
     }
 
     function decimals() external pure returns(uint) {
-        return 18; // 1 token = 1 wei
+        return 1; // 1 token = 1 wei
     }
 
     function totalSupply() external view returns(uint) {
@@ -87,7 +87,7 @@ contract ERC20  is IERC20 {
 }
 
 contract MCSToken is ERC20 {
-    constructor(address owner) ERC20("MCSToken", "MCT", 10000) {}
+    constructor(address owner) ERC20("MCSToken", "MCT", 100000) {}
 }
 contract LendingProtocol {
   IERC20 public token;

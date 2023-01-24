@@ -12,7 +12,7 @@ async function main() {
   const tok = await contract.token();
 
   console.log("Contract address:", contract.address);
-  console.log("Token address:", tok);
+  console.log("Token address:", tok)
 }
 
 main()
