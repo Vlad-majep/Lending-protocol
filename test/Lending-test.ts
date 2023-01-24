@@ -24,7 +24,7 @@ describe("LendingProtocol", function() {
 
     it("allows to buy", async function() {
       const { owner, erc20 } = await loadFixture(deploy);
-      const tokenAmount = 1000
+      const tokenAmount = 100
 
       const txData = {
         value: tokenAmount,
