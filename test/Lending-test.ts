@@ -1,33 +1,32 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { LendingProtocol, MCSToken__factory} from "../typechain-types";
-import tokenJSON from "../artifacts/contracts/LendingProtocol.sol/MCSToken.json";
+import { LendingProtocol} from "../typechain-types";
 
 describe("LendingProtocol", function() {
     async function deploy() {
       const [ owner, user ] = await ethers.getSigners();
       const LendingFactory = await ethers.getContractFactory("LendingProtocol");
-      const lending : LendingProtocol = await LendingFactory.deploy();
+      const lending : LendingProtocol = await LendingFactory.deploy(1000);
       await lending.deployed();
-      const erc20 = new ethers.Contract(await lending.token(), tokenJSON.abi, owner);
+      const token = await (await ethers.getContractFactory("ERC20", owner)).deploy("Dem9n", "D9")
 
-      return { lending, owner, user , erc20}
+      return { lending, owner, user , token}
     }
 
-    it("should have an owner and a token", async function() {
-      const { lending , owner } = await loadFixture(deploy);
+    it("should have an owner and token", async function() {
+      const { lending , owner, token } = await loadFixture(deploy);
       expect(await lending.owner()).to.eq(owner.address)
 
-      expect(await lending.token()).to.be.properAddress
+      expect(await lending.balanceOf(owner.address)).to.eq(1000)
+
     });
 
-    it("allows to buy", async function() {
-      const { owner, erc20 } = await loadFixture(deploy);
 
-      const tx = await erc20.mint(100, owner.address)
-      await tx.wait()
+    it("should have an deposit", async function() {
+      const { lending , owner, token } = await loadFixture(deploy);
+      expect(await lending.deposit(lending.token(),  1000))
 
-      expect(await erc20.balanceOf(owner.address)).to.eq(100)
+      expect(await lending.balanceOf(owner.address)).to.eq(200)
     });
 });
