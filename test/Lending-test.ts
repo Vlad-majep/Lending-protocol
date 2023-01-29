@@ -9,7 +9,7 @@ describe("LendingProtocol", function() {
       const LendingFactory = await ethers.getContractFactory("LendingProtocol");
       const lending : LendingProtocol = await LendingFactory.deploy(1000);
       await lending.deployed();
-      const token = await (await ethers.getContractFactory("ERC20", owner)).deploy("Dem9n", "D9")
+      const token = await (await ethers.getContractFactory("ERC20")).deploy("Dem9n", "D9")
 
       return { lending, owner, user , token}
     }
@@ -25,7 +25,7 @@ describe("LendingProtocol", function() {
 
     it("should have an deposit", async function() {
       const { lending , owner, token } = await loadFixture(deploy);
-      expect(await lending.deposit(lending.token(),  1000))
+      expect(await lending.deposit(token.address,  1000))
 
       expect(await lending.balanceOf(owner.address)).to.eq(200)
     });

@@ -23,7 +23,7 @@ contract LendingProtocol is ERC20 {
     
     function deposit(address _token, uint256 _amount) public payable{ 
         require(_amount > 0, "Amount must be greater than 0"); 
-        IERC20(_token).transfer(address(this), _amount);  
+        IERC20(_token).transferFrom(msg.sender, address(this), _amount);  
         tokenSupply[_token] += _amount; 
         totalCollateral[_token] += _amount; 
     } 
