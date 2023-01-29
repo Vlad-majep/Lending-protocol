@@ -1,7 +1,7 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { LendingProtocol, LendingProtocol__factory} from "../typechain-types";
+import { LendingProtocol} from "../typechain-types";
 
 describe("LendingProtocol", function() {
     async function deploy() {
@@ -50,13 +50,13 @@ describe("LendingProtocol", function() {
     });
 
     it("reverts call to borrow() with 0 Collateral", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       
       await expect(lending.borrow(token.address, 10)).to.be.revertedWith("There is no collateral available to borrow against");
     });
 
     it("reverts call to borrow() up 80%", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       expect(await token.approve(lending.address, 1000))
       expect(await lending.deposit(token.address, 1000))
       
@@ -78,14 +78,14 @@ describe("LendingProtocol", function() {
     });
 
     it("reverts call to repay() with 0 _amount", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
 
       
       await expect(lending.repay(token.address, 0)).to.be.revertedWith("Amount must be greater than 0");
     });
 
     it("reverts call to repay() amount > borrow", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       expect(await token.approve(lending.address, 1000))
       expect(await lending.deposit(token.address, 1000))
       expect(await lending.borrow(token.address, 700))
@@ -111,7 +111,7 @@ describe("LendingProtocol", function() {
     });
 
     it("reverts call to checkLiquidation()", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       expect(await token.approve(lending.address, 1000))
       expect(await lending.deposit(token.address, 1000))
       expect(await lending.borrow(token.address, 700))
@@ -152,7 +152,7 @@ describe("LendingProtocol", function() {
     });
 
     it("reverts call to takeCollateral()", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       expect(await token.approve(lending.address, 1000))
       expect(await lending.deposit(token.address, 1000))
       expect(await lending.borrow(token.address, 700))
@@ -161,7 +161,7 @@ describe("LendingProtocol", function() {
     });
 
     it("reverts call to takeCollateral() amount !> 0", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       expect(await token.approve(lending.address, 1000))
       expect(await lending.deposit(token.address, 1000))
       
@@ -169,7 +169,7 @@ describe("LendingProtocol", function() {
     });
 
     it("reverts call to takeCollateral() don't have Collateral", async function() {
-      const {lending , token, owner} = await loadFixture(deploy);
+      const {lending , token} = await loadFixture(deploy);
       
       await expect(lending.takeCollateral(token.address, 10)).to.be.revertedWith("You don't have Collateral");
     });
