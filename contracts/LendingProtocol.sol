@@ -47,12 +47,8 @@ contract LendingProtocol {
         totalBorrowed[_token] -= _amount; 
     }
 
-    function checkLiquidation(address _token) public {
-        require(userBorrowed[_token][msg.sender] > userCollateral[_token][msg.sender] * 8/10, "Your borrow is not liquidate");
-        liquidate(_token);
-    }
-
     function liquidate(address _token) public  {
+        require(userBorrowed[_token][msg.sender] < userCollateral[_token][msg.sender] * 8/10, "Your borrow is not liquidate");
         uint amount = totalBorrowed[_token];
         totalBorrowed[_token] -= amount;
         IERC20(_token).transferFrom(msg.sender, address(this), amount);
@@ -62,15 +58,5 @@ contract LendingProtocol {
         IERC20(_token).transfer(msg.sender, amount);
         delete userBorrowed[_token][msg.sender];
         delete userCollateral[_token][msg.sender];
-    }
-
-    function takeCollateral(address _token, uint _amount) public {
-        require(userBorrowed[_token][msg.sender] == 0 , "You are have borrow token, repay and try again");
-        require(_amount > 0, "Amount must be greater than 0");
-        require(userCollateral[_token][msg.sender] > 0, "You don't have Collateral");
-        IERC20(_token).transfer(msg.sender, _amount);
-        userCollateral[_token][msg.sender] -= _amount;
-        totalCollateral[_token] -= _amount;
-        tokenSupply[_token] -= _amount;
     }
 }

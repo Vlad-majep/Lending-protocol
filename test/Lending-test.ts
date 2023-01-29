@@ -94,31 +94,6 @@ describe("LendingProtocol", function() {
       await expect(lending.repay(token.address, 800)).to.be.revertedWith("Repay amount exceeds the total borrowed amount");
     });
 
-    it("should have an checkLiquidation()", async function() {
-      const {lending , token , owner} = await loadFixture(deploy);
-      expect(await token.approve(lending.address, 1000))
-      expect(await lending.deposit(token.address, 1000))
-      expect(await lending.borrow(token.address, 700))
-      expect(await token.approve(lending.address, 1000))
-      expect(await lending.checkLiquidation(token.address))
-
-      expect(await token.balanceOf(owner.address)).to.eq(1000)
-      expect(await lending.tokenSupply(token.address)).to.eq(0)
-      expect(await lending.userBorrowed(token.address, owner.address)).to.eq(0)
-      expect(await lending.totalBorrowed(token.address)).to.eq(0)
-      expect(await lending.userCollateral(token.address, owner.address)).to.eq(0)
-      expect(await lending.totalCollateral(token.address)).to.eq(0)
-    });
-
-    it("reverts call to checkLiquidation()", async function() {
-      const {lending , token} = await loadFixture(deploy);
-      expect(await token.approve(lending.address, 1000))
-      expect(await lending.deposit(token.address, 1000))
-      expect(await lending.borrow(token.address, 700))
-
-      
-      await expect(lending.checkLiquidation(token.address)).to.be.revertedWith("Your borrow is not liquidate");
-    });
 
     it("should have an liquidate()", async function() {
       const {lending , token , owner} = await loadFixture(deploy);
@@ -134,43 +109,5 @@ describe("LendingProtocol", function() {
       expect(await lending.totalBorrowed(token.address)).to.eq(0)
       expect(await lending.userCollateral(token.address, owner.address)).to.eq(0)
       expect(await lending.totalCollateral(token.address)).to.eq(0)
-    });
-
-    it("should have an takeCollateral()", async function() {
-      const {lending , token , owner} = await loadFixture(deploy);
-      expect(await token.approve(lending.address, 1000))
-      expect(await lending.deposit(token.address, 1000))
-      expect(await lending.takeCollateral(token.address, 1000))
-
-
-      expect(await token.balanceOf(owner.address)).to.eq(1000)
-      expect(await lending.tokenSupply(token.address)).to.eq(0)
-      expect(await lending.userBorrowed(token.address, owner.address)).to.eq(0)
-      expect(await lending.totalBorrowed(token.address)).to.eq(0)
-      expect(await lending.userCollateral(token.address, owner.address)).to.eq(0)
-      expect(await lending.totalCollateral(token.address)).to.eq(0)
-    });
-
-    it("reverts call to takeCollateral()", async function() {
-      const {lending , token} = await loadFixture(deploy);
-      expect(await token.approve(lending.address, 1000))
-      expect(await lending.deposit(token.address, 1000))
-      expect(await lending.borrow(token.address, 700))
-      
-      await expect(lending.takeCollateral(token.address, 1000)).to.be.revertedWith("You are have borrow token, repay and try again");
-    });
-
-    it("reverts call to takeCollateral() amount !> 0", async function() {
-      const {lending , token} = await loadFixture(deploy);
-      expect(await token.approve(lending.address, 1000))
-      expect(await lending.deposit(token.address, 1000))
-      
-      await expect(lending.takeCollateral(token.address, 0)).to.be.revertedWith("Amount must be greater than 0");
-    });
-
-    it("reverts call to takeCollateral() don't have Collateral", async function() {
-      const {lending , token} = await loadFixture(deploy);
-      
-      await expect(lending.takeCollateral(token.address, 10)).to.be.revertedWith("You don't have Collateral");
     });
 });
