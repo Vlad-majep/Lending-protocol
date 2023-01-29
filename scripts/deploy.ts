@@ -8,7 +8,7 @@ async function main() {
   console.log("Account balance:", (await owner.getBalance()).toString());
 
   const task = await ethers.getContractFactory("LendingProtocol");
-  const contract = await task.deploy(1000);
+  const contract = await task.deploy();
 
   console.log("Contract address:", contract.address);
 }
