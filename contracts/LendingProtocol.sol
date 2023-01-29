@@ -36,10 +36,10 @@ contract ERC20  is IERC20 {
         require(msg.sender == owner, "not an owner!");
         _;
     }
-    constructor(string memory name_, string memory symbol_, uint initialSupply) {
+    constructor(string memory name_, string memory symbol_, uint initialSupply, address _owner) {
         _name = name_;
         _symbol = symbol_;
-        owner = msg.sender;
+        owner = _owner;
         mint(initialSupply, owner);
     }
 
@@ -87,7 +87,7 @@ contract ERC20  is IERC20 {
 }
 
 contract MCSToken is ERC20 {
-    constructor(address owner) ERC20("MCSToken", "MCT", 100000) {}
+    constructor(address owner) ERC20("MCSToken", "MCT", 100000, owner) {}
 }
 contract LendingProtocol {
   IERC20 public token;
@@ -130,5 +130,19 @@ contract LendingProtocol {
     require(borrowedAmount >= _amount, "Repay amount exceeds the total borrowed amount"); 
     IERC20(_token).transfer(address(this), _amount); 
     totalBorrowed[_token] -= _amount; 
-  } 
+    }
+
+    function checkLiquidation(address _token) public{
+        require(totalBorrowed[_token] > totalCollateral[_token] * 8/10, "Your borrow is not liquidate");
+        liquidate(_token);
+    }
+
+    function liquidate(address _token) public {
+    uint256 amount = totalBorrowed[_token];
+    IERC20(token).transferFrom(owner, address(this), amount);
+    amount = totalCollateral[_token];
+    IERC20(token).transfer(owner, amount);
+    delete totalBorrowed[_token];
+    delete totalCollateral[_token];
+}
 }
