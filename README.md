@@ -1,13 +1,9 @@
-# Sample Hardhat protocol
+# Lending Protocol
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+function deposit() - it's deposit token to lending 
 
-Try running some of the following tasks:
+function borrow() - it's give you borrow token < 80% Your deposit
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+function repay() - it's repay borrow token 
+
+function liquidate() - it's liquidate your token if borrow < 80% deposit 
